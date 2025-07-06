@@ -1,0 +1,10 @@
+{
+  "id": "helloWorld",
+  "name": "Hello World",
+  "version": "1.0",
+  "icon": "👋",
+  "description": "A simple Hello World app",
+  "author": "System",
+  "desktopIcon": true,
+  "code": "const container = app.rootElement;\ncontainer.innerHTML = '<h1>Hello World</h1>';"
+}
