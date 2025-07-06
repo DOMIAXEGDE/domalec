@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Token Relation System (Mobile-Friendly)</title>
+    <style>
+        /* Core CSS Variables */
+        :root {
+            --bg-dark: #111827; --bg-medium: #1f2937; --bg-light: #374151;
+            --border-color: #4b5563; --text-primary: #d1d5db; --text-secondary: #9ca3af;
+            --accent-color: #3b82f6; --accent-hover: #60a5fa;
+            --success-color: #16a34a; --danger-color: #ef4444; --danger-hover: #f87171;
+        }
+
+        /* System-wide reset */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        /* Base styles */
+        html, body { height: 100%; }
+        body { 
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif; 
+            background-color: var(--bg-dark); 
+            color: var(--text-primary); 
+            font-size: 0.875rem; 
+            line-height: 1.5;
+        }
+        
+        /* Layout utilities */
+        .h-full { height: 100%; }
+        .grid { display: grid; }
+        .flex { display: flex; }
+        .p-2 { padding: 0.5rem; }
+        .p-4 { padding: 1rem; }
+        .gap-2 { gap: 0.5rem; }
+        .gap-4 { gap: 1rem; }
+        .space-y-2 > * + * { margin-top: 0.5rem; }
+        .space-y-3 > * + * { margin-top: 0.75rem; }
+        .space-y-4 > * + * { margin-top: 1rem; }
+        .space-x-2 > * + * { margin-left: 0.5rem; }
+        .mb-1 { margin-bottom: 0.25rem; }
+        .mb-2 { margin-bottom: 0.5rem; }
+        .mb-4 { margin-bottom: 1rem; }
+        .mb-6 { margin-bottom: 1.5rem; }
+        .mt-2 { margin-top: 0.5rem; }
+        .mt-4 { margin-top: 1rem; }
+        .mr-2 { margin-right: 0.5rem; }
+        .block { display: block; }
+        .inline-flex { display: inline-flex; }
+        .hidden { display: none; }
+        .w-full { width: 100%; }
+        .h-32 { height: 8rem; }
+        .text-center { text-align: center; }
+        .text-sm { font-size: 0.875rem; }
+        .text-xs { font-size: 0.75rem; }
+        .text-xl { font-size: 1.25rem; }
+        .text-2xl { font-size: 1.5rem; }
+        .font-medium { font-weight: 500; }
+        .font-bold { font-weight: 700; }
+        .font-mono { font-family: 'Courier New', Courier, monospace; }
+        .rounded { border-radius: 0.25rem; }
+        .rounded-lg { border-radius: 0.5rem; }
+        .truncate { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        
+        /* Colors */
+        .text-white { color: #fff; }
+        .text-gray-300 { color: #d1d5db; }
+        .text-gray-400 { color: #9ca3af; }
+        .text-gray-500 { color: #6b7280; }
+        .text-blue-400 { color: #60a5fa; }
+        .text-green-400 { color: #34d399; }
+        .text-red-400 { color: #f87171; }
+        .text-yellow-400 { color: #fbbf24; }
+        .bg-gray-800 { background-color: #1f2937; }
+        .bg-gray-900 { background-color: #111827; }
+        
+        /* Flexbox utilities */
+        .flex-col { flex-direction: column; }
+        .items-center { align-items: center; }
+        .justify-between { justify-content: space-between; }
+        .justify-center { justify-content: center; }
+        .justify-end { justify-content: flex-end; }
+        .flex-grow { flex-grow: 1; }
+
+        /* Grid utilities */
+        .grid-cols-1 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
+        .grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        .grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+        .col-span-2 { grid-column: span 2 / span 2; }
+        
+        /* Responsive utilities */
+        @media (min-width: 640px) {
+            .sm\:grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+        }
+        @media (min-width: 768px) {
+            .md\:grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+            .md\:grid-cols-5 { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+            .md\:col-start-1 { grid-column-start: 1; }
+            .md\:col-start-2 { grid-column-start: 2; }
+            .md\:col-start-3 { grid-column-start: 3; }
+            .md\:col-span-1 { grid-column: span 1 / span 1; }
+            .md\:col-span-2 { grid-column: span 2 / span 2; }
+            .md\:row-start-1 { grid-row-start: 1; }
+            .md\:row-start-2 { grid-row-start: 2; }
+            .md\:row-span-1 { grid-row: span 1 / span 1; }
+            .md\:row-span-2 { grid-row: span 2 / span 2; }
+            .md\:gap-4 { gap: 1rem; }
+            .md\:p-4 { padding: 1rem; }
+            .md\:h-screen { height: 100vh; }
+        }
+        @media (min-width: 1024px) {
+            .lg\:grid-cols-8 { grid-template-columns: repeat(8, minmax(0, 1fr)); }
+        }
+
+        /* Component styles */
+        .widget { 
+            background-color: var(--bg-medium); 
+            border: 1px solid var(--border-color); 
+            border-radius: 0.5rem; 
+            display: flex; 
+            flex-direction: column; 
+            min-height: 200px; 
+        }
+        .widget-header { 
+            background-color: var(--bg-light); 
+            padding: 0.5rem 1rem; 
+            border-bottom: 1px solid var(--border-color); 
+            font-weight: 600; 
+            display: flex; 
+            align-items: center; 
+            gap: 0.5rem;
+        }
+        .widget-content { 
+            padding: 1rem; 
+            overflow-y: auto; 
+            flex-grow: 1; 
+        }
+        .custom-input, .custom-textarea, .custom-select {
+            background-color: var(--bg-light); 
+            border: 1px solid var(--border-color); 
+            color: var(--text-primary);
+            border-radius: 0.375rem; 
+            padding: 0.5rem 0.75rem; 
+            width: 100%; 
+            font-family: monospace;
+        }
+        .custom-input:focus, .custom-textarea:focus, .custom-select:focus { 
+            outline: none; 
+            border-color: var(--accent-color); 
+            box-shadow: 0 0 0 2px var(--bg-dark); 
+        }
+        .custom-btn {
+            background-color: var(--border-color); 
+            color: #f9fafb; 
+            font-weight: 600; 
+            padding: 0.5rem 1rem; 
+            border-radius: 0.375rem;
+            transition: background-color 0.2s; 
+            border: 1px solid transparent; 
+            display: inline-flex; 
+            align-items: center; 
+            justify-content: center; 
+            gap: 0.5rem; 
+            cursor: pointer;
+        }
+        .custom-btn:hover { background-color: #6b7280; }
+        .custom-btn-primary { background-color: var(--accent-color); }
+        .custom-btn-primary:hover { background-color: var(--accent-hover); }
+        .custom-btn-danger { background-color: var(--danger-color); }
+        .custom-btn-danger:hover { background-color: var(--danger-hover); }
+        
+        .modal-overlay { 
+            position: fixed; 
+            inset: 0; 
+            background-color: rgba(0,0,0,0.75); 
+            display: grid; 
+            place-items: center; 
+            z-index: 100; 
+            opacity: 0; 
+            pointer-events: none; 
+            transition: opacity 0.2s; 
+        }
+        .modal-overlay.active { 
+            opacity: 1; 
+            pointer-events: auto; 
+        }
+        .modal-content { 
+            background-color: var(--bg-medium); 
+            padding: 1.5rem; 
+            border-radius: 0.5rem; 
+            width: 90%; 
+            max-width: 500px; 
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.3); 
+            transform: scale(0.95); 
+            transition: transform 0.2s; 
+        }
+        .modal-overlay.active .modal-content { 
+            transform: scale(1); 
+        }
+        .toast-notification { 
+            position: fixed; 
+            bottom: 1rem; 
+            right: 1rem; 
+            background-color: var(--bg-light); 
+            color: var(--text-primary); 
+            padding: 1rem 1.5rem; 
+            border-radius: 0.5rem; 
+            border-left: 4px solid var(--success-color); 
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.3); 
+            z-index: 101; 
+            display: flex; 
+            align-items: center; 
+            gap: 1rem; 
+            transform: translateX(120%); 
+            transition: transform 0.4s ease-in-out; 
+        }
+        .toast-notification.show { 
+            transform: translateX(0); 
+        }
+
+        /* Icon replacement system */
+        .icon {
+            display: inline-block;
+            width: 1em;
+            height: 1em;
+            position: relative;
+            vertical-align: middle;
+        }
+        .icon::before, .icon::after {
+            content: '';
+            position: absolute;
+        }
+        .icon-database::before {
+            width: 0.8em;
+            height: 0.8em;
+            border: 0.1em solid currentColor;
+            border-radius: 0.4em;
+            top: 0.1em;
+            left: 0.1em;
+        }
+        .icon-font::before {
+            width: 0.8em;
+            height: 0.8em;
+            border-bottom: 0.15em solid currentColor;
+            top: 0.1em;
+            left: 0.1em;
+        }
+        .icon-font::after {
+            content: 'A';
+            font-weight: bold;
+            font-size: 0.7em;
+            top: 0.05em;
+            left: 0.35em;
+        }
+        .icon-project-diagram::before {
+            width: 0.25em;
+            height: 0.25em;
+            background: currentColor;
+            border-radius: 50%;
+            top: 0.15em;
+            left: 0.15em;
+        }
+        .icon-project-diagram::after {
+            width: 0.25em;
+            height: 0.25em;
+            background: currentColor;
+            border-radius: 50%;
+            bottom: 0.15em;
+            right: 0.15em;
+            box-shadow: -0.4em 0 0 currentColor;
+        }
+        .icon-list-ol::before {
+            width: 0.5em;
+            height: 0.1em;
+            background: currentColor;
+            top: 0.25em;
+            right: 0.1em;
+            box-shadow: 0 0.2em 0 currentColor, 0 0.4em 0 currentColor;
+        }
+        .icon-list-ol::after {
+            content: '1';
+            font-size: 0.5em;
+            font-weight: bold;
+            left: 0.15em;
+            top: 0.3em;
+        }
+        .icon-balance-scale::before {
+            width: 0.8em;
+            height: 0.1em;
+            background: currentColor;
+            top: 0.4em;
+            left: 0.1em;
+        }
+        .icon-balance-scale::after {
+            width: 0.1em;
+            height: 0.4em;
+            background: currentColor;
+            top: 0.1em;
+            left: 0.45em;
+            box-shadow: -0.2em 0.4em 0 -0.02em currentColor, 0.2em 0.4em 0 -0.02em currentColor;
+        }
+        .icon-save::before {
+            width: 0.7em;
+            height: 0.7em;
+            border: 0.1em solid currentColor;
+            border-radius: 0.1em;
+            top: 0.15em;
+            left: 0.15em;
+        }
+        .icon-save::after {
+            width: 0.3em;
+            height: 0.3em;
+            border: 0.1em solid currentColor;
+            border-radius: 50%;
+            top: 0.3em;
+            left: 0.35em;
+        }
+        .icon-skull-crossbones::before {
+            width: 0.6em;
+            height: 0.6em;
+            border: 0.1em solid currentColor;
+            border-radius: 50%;
+            top: 0.1em;
+            left: 0.2em;
+        }
+        .icon-skull-crossbones::after {
+            width: 0.5em;
+            height: 0.1em;
+            background: currentColor;
+            bottom: 0.2em;
+            left: 0.25em;
+            transform: rotate(45deg);
+            box-shadow: 0 0 0 0.1em var(--bg-medium), -0.1em 0.1em 0 0 currentColor;
+        }
+        .icon-download::before {
+            width: 0.1em;
+            height: 0.5em;
+            background: currentColor;
+            top: 0.15em;
+            left: 0.45em;
+        }
+        .icon-download::after {
+            width: 0.4em;
+            height: 0.4em;
+            border-left: 0.1em solid currentColor;
+            border-bottom: 0.1em solid currentColor;
+            transform: rotate(-45deg);
+            bottom: 0.15em;
+            left: 0.25em;
+        }
+        .icon-upload::before {
+            width: 0.1em;
+            height: 0.5em;
+            background: currentColor;
+            bottom: 0.15em;
+            left: 0.45em;
+        }
+        .icon-upload::after {
+            width: 0.4em;
+            height: 0.4em;
+            border-left: 0.1em solid currentColor;
+            border-top: 0.1em solid currentColor;
+            transform: rotate(45deg);
+            top: 0.15em;
+            left: 0.25em;
+        }
+        .icon-plus::before {
+            width: 0.8em;
+            height: 0.1em;
+            background: currentColor;
+            top: 0.45em;
+            left: 0.1em;
+        }
+        .icon-plus::after {
+            width: 0.1em;
+            height: 0.8em;
+            background: currentColor;
+            top: 0.1em;
+            left: 0.45em;
+        }
+        .icon-pencil::before {
+            width: 0.7em;
+            height: 0.1em;
+            background: currentColor;
+            transform: rotate(45deg);
+            top: 0.45em;
+            left: 0.15em;
+        }
+        .icon-pencil::after {
+            width: 0.2em;
+            height: 0.2em;
+            border-left: 0.1em solid currentColor;
+            border-bottom: 0.1em solid currentColor;
+            transform: rotate(45deg);
+            top: 0.15em;
+            right: 0.25em;
+        }
+        .icon-trash::before {
+            width: 0.6em;
+            height: 0.6em;
+            border: 0.1em solid currentColor;
+            border-top: none;
+            border-radius: 0 0 0.1em 0.1em;
+            top: 0.3em;
+            left: 0.2em;
+        }
+        .icon-trash::after {
+            width: 0.4em;
+            height: 0.1em;
+            background: currentColor;
+            top: 0.2em;
+            left: 0.3em;
+            box-shadow: 0 -0.1em 0 0.1em currentColor;
+        }
+        .icon-cogs::before {
+            width: 0.4em;
+            height: 0.4em;
+            border: 0.1em solid currentColor;
+            border-radius: 50%;
+            top: 0.3em;
+            left: 0.1em;
+        }
+        .icon-cogs::after {
+            width: 0.3em;
+            height: 0.3em;
+            border: 0.1em solid currentColor;
+            border-radius: 50%;
+            bottom: 0.3em;
+            right: 0.15em;
+        }
+        .icon-check-double::before {
+            width: 0.5em;
+            height: 0.25em;
+            border-left: 0.1em solid currentColor;
+            border-bottom: 0.1em solid currentColor;
+            transform: rotate(-45deg);
+            top: 0.3em;
+            left: 0.15em;
+        }
+        .icon-check-double::after {
+            width: 0.5em;
+            height: 0.25em;
+            border-left: 0.1em solid currentColor;
+            border-bottom: 0.1em solid currentColor;
+            transform: rotate(-45deg);
+            top: 0.4em;
+            left: 0.35em;
+        }
+        .icon-check-circle::before {
+            width: 0.8em;
+            height: 0.8em;
+            border: 0.1em solid currentColor;
+            border-radius: 50%;
+            top: 0.1em;
+            left: 0.1em;
+        }
+        .icon-check-circle::after {
+            width: 0.4em;
+            height: 0.2em;
+            border-left: 0.1em solid currentColor;
+            border-bottom: 0.1em solid currentColor;
+            transform: rotate(-45deg);
+            top: 0.35em;
+            left: 0.3em;
+        }
+        .icon-times-circle::before {
+            width: 0.8em;
+            height: 0.8em;
+            border: 0.1em solid currentColor;
+            border-radius: 50%;
+            top: 0.1em;
+            left: 0.1em;
+        }
+        .icon-times-circle::after {
+            width: 0.4em;
+            height: 0.4em;
+            background: transparent;
+            transform: rotate(45deg);
+            top: 0.3em;
+            left: 0.3em;
+            box-shadow: -0.1em 0 0 currentColor, 0 0 0 0.1em currentColor;
+        }
+        .icon-info-circle::before {
+            width: 0.8em;
+            height: 0.8em;
+            border: 0.1em solid currentColor;
+            border-radius: 50%;
+            top: 0.1em;
+            left: 0.1em;
+        }
+        .icon-info-circle::after {
+            content: 'i';
+            font-style: italic;
+            font-weight: bold;
+            font-size: 0.6em;
+            top: 0.2em;
+            left: 0.4em;
+        }
+        .icon-question::before {
+            width: 0.8em;
+            height: 0.8em;
+            border: 0.1em solid currentColor;
+            border-radius: 50%;
+            top: 0.1em;
+            left: 0.1em;
+        }
+        .icon-question::after {
+            content: '?';
+            font-weight: bold;
+            font-size: 0.6em;
+            top: 0.15em;
+            left: 0.35em;
+        }
+    </style>
+</head>
+<body class="text-sm">
+
+    <div id="app-container" class="grid grid-cols-1 md:grid-cols-3 gap-2 p-2 md:gap-4 md:p-4 md:h-screen"></div>
+
+    <div id="modal-container"></div>
+    <div id="toast-container"></div>
+
+    <template id="widget-template">
+        <div class="widget min-h-[250px]">
+            <div class="widget-header">
+                <span class="widget-icon icon"></span>
+                <span class="widget-title">Widget</span>
+            </div>
+            <div class="widget-content"></div>
+        </div>
+    </template>
+
+    <script>
+        // State module
+        const state = {};
+        const defaultState = {
+            lexicon: { alphabet: '01', maxLength: 3 },
+            generatedTokens: ["0", "1", "00", "01", "10", "11", "000", "001", "010", "011", "100", "101", "110", "111"],
+            relationDefinitions: [
+                { id: 1678886400000, name: 'EQUALS', definition: 'return tokenA === tokenB;' },
+                { id: 1678886400001, name: 'IS_PREFIX_OF', definition: 'return tokenB.startsWith(tokenA);' },
+                { id: 1678886400002, name: 'IS_SUFFIX_OF', definition: 'return tokenB.endsWith(tokenA);' },
+                { id: 1678886400003, name: 'CONTAINS', definition: 'return tokenA.includes(tokenB);' }
+            ],
+            ui: {
+                widgets: {
+                    'system':     { active: true, row: '1', col: '1' },
+                    'lexicon':    { active: true, row: '2', col: '1' },
+                    'tokens':     { active: true, row: '1', col: '2', rowSpan: '2' },
+                    'relations':  { active: true, row: '1', col: '3' },
+                    'comparator': { active: true, row: '2', col: '3' },
+                }
+            }
+        };
+        
+        function initGameState(importedState = null) {
+            if (importedState) { 
+                Object.assign(state, importedState); 
+                console.log("Game state imported."); 
+            } else {
+                const savedData = localStorage.getItem('token_system_state');
+                if (savedData) { 
+                    Object.assign(state, JSON.parse(savedData)); 
+                    console.log("Game state loaded from localStorage."); 
+                } else { 
+                    Object.assign(state, JSON.parse(JSON.stringify(defaultState))); 
+                    console.log("New game state created with defaults."); 
+                }
+            }
+        }
+        
+        function saveState() {
+            if (!state || Object.keys(state).length === 0) return;
+            try {
+                localStorage.setItem('token_system_state', JSON.stringify(state));
+                console.log("Game state saved.");
+            } catch (error) { console.error("Failed to save state:", error); }
+        }
+
+        // UI module
+        const widgetRegistry = {
+            'system':     { icon: 'icon-database', title: 'System & Data' },
+            'lexicon':    { icon: 'icon-font', title: 'Lexicon Manager' },
+            'relations':  { icon: 'icon-project-diagram', title: 'Relation-Definition Manager' },
+            'tokens':     { icon: 'icon-list-ol', title: 'Generated Tokens' },
+            'comparator': { icon: 'icon-balance-scale', title: 'Comparison Engine' },
+        };
+        
+        function renderDashboard() {
+            const container = document.getElementById('app-container');
+            container.innerHTML = '';
+            Object.entries(state.ui.widgets).forEach(([id, config]) => {
+                if (config.active) {
+                    const template = document.getElementById('widget-template').content.cloneNode(true);
+                    const widgetEl = template.querySelector('.widget');
+                    widgetEl.id = `widget-${id}`;
+                    if (config.col) widgetEl.classList.add(`md:col-start-${config.col}`);
+                    if (config.colSpan) widgetEl.classList.add(`md:col-span-${config.colSpan}`);
+                    if (config.row) widgetEl.classList.add(`md:row-start-${config.row}`);
+                    if (config.rowSpan) widgetEl.classList.add(`md:row-span-${config.rowSpan}`);
+
+                    const meta = widgetRegistry[id];
+                    if (meta) {
+                        template.querySelector('.widget-icon').className = `widget-icon ${meta.icon}`;
+                        template.querySelector('.widget-title').textContent = meta.title;
+                    }
+                    container.appendChild(template);
+                }
+            });
+        }
+        
+        function showModal(title, content, onConfirm, confirmText = 'Confirm') {
+            const modalContainer = document.getElementById('modal-container');
+            modalContainer.innerHTML = `<div id="modal-overlay" class="modal-overlay active"><div class="modal-content"><h3 class="text-xl font-bold mb-4">${title}</h3><div class="modal-body mb-6">${content}</div><div class="flex justify-end space-x-2"><button id="modal-cancel" class="custom-btn">Cancel</button><button id="modal-confirm" class="custom-btn custom-btn-primary">${confirmText}</button></div></div></div>`;
+            const overlay = document.getElementById('modal-overlay');
+            document.getElementById('modal-cancel').onclick = () => overlay.remove();
+            document.getElementById('modal-confirm').onclick = () => { if(onConfirm() !== false) { overlay.remove(); } };
+            overlay.onclick = (e) => { if (e.target.id === 'modal-overlay') { overlay.remove(); } }
+        }
+        
+        function showToast(title, message = '', type = 'success') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            const typeMap = { 
+                success: { icon: 'icon-check-circle', color: 'var(--success-color)' }, 
+                error: { icon: 'icon-times-circle', color: 'var(--danger-color)' }, 
+                info: { icon: 'icon-info-circle', color: 'var(--accent-color)' } 
+            };
+            const config = typeMap[type] || typeMap.info;
+            toast.className = 'toast-notification';
+            toast.style.borderLeftColor = config.color;
+            toast.innerHTML = `<span class="${config.icon} text-xl" style="color: ${config.color}"></span><div><h4 class="font-bold">${title}</h4><p class="text-sm text-gray-400">${message}</p></div>`;
+            container.appendChild(toast);
+            setTimeout(() => toast.classList.add('show'), 10);
+            setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 500); }, 5000);
+        }
+
+        // Lexicon module
+        function initLexicon() {
+            const widget = document.getElementById('widget-lexicon');
+            if (!widget) return;
+            widget.querySelector('.widget-content').innerHTML = `<div class="space-y-4"><div><label for="alphabet-input" class="block mb-1 font-medium text-gray-300">Token Alphabet</label><input type="text" id="alphabet-input" class="custom-input" spellcheck="false"></div><div><label for="max-length-input" class="block mb-1 font-medium text-gray-300">Max Token Length (n)</label><input type="number" id="max-length-input" class="custom-input" min="1"></div><button id="generate-tokens-btn" class="custom-btn custom-btn-primary w-full"><span class="icon icon-cogs"></span> Update & Generate</button></div>`;
+            document.getElementById('alphabet-input').value = state.lexicon.alphabet;
+            document.getElementById('max-length-input').value = state.lexicon.maxLength;
+            document.getElementById('generate-tokens-btn').onclick = handleGenerate;
+        }
+        
+        function handleGenerate() {
+            const alphabet = document.getElementById('alphabet-input').value;
+            const maxLength = parseInt(document.getElementById('max-length-input').value, 10);
+            if (!alphabet) { return showToast("Error", "Alphabet cannot be empty.", "error"); }
+            if (isNaN(maxLength) || maxLength < 1) { return showToast("Error", "Max length must be a positive number.", "error"); }
+            const uniqueChars = Array.from(new Set(alphabet.split('')));
+            if (uniqueChars.length !== alphabet.length) { document.getElementById('alphabet-input').value = uniqueChars.join(''); showToast("Info", "Duplicate characters in alphabet were removed.", "info"); }
+            if (Math.pow(uniqueChars.length, maxLength) > 20000) { showToast("Warning", "This generation might be slow or unstable.", "error"); }
+            state.lexicon.alphabet = uniqueChars.join('');
+            state.lexicon.maxLength = maxLength;
+            state.generatedTokens = generateAllTokens(state.lexicon.alphabet, state.lexicon.maxLength);
+            showToast("Success", `${state.generatedTokens.length} tokens generated.`);
+            renderTokens();
+            renderComparator();
+        }
+        
+        function generateAllTokens(alphabet, maxLength) {
+            const results = [];
+            function generate(currentPrefix, length) {
+                if (length > maxLength) return;
+                for (let i = 0; i < alphabet.length; i++) {
+                    const newToken = currentPrefix + alphabet[i];
+                    results.push(newToken);
+                    generate(newToken, length + 1);
+                }
+            }
+            generate('', 1);
+            return results;
+        }
+
+        // Relations module
+        function initRelations() {
+            const widget = document.getElementById('widget-relations');
+            if (!widget) return;
+            widget.querySelector('.widget-content').innerHTML = `<div id="relations-list" class="space-y-2"></div><button id="add-relation-btn" class="custom-btn w-full mt-4"><span class="icon icon-plus"></span> Add New Relation</button>`;
+            renderRelations();
+            document.getElementById('add-relation-btn').onclick = () => handleEditRelation();
+        }
+        
+        function renderRelations() {
+            const listEl = document.getElementById('relations-list');
+            if (!listEl) return;
+            listEl.innerHTML = state.relationDefinitions.map(rel => `<div class="flex items-center justify-between bg-gray-800 p-2 rounded"><span class="font-mono text-blue-400">${rel.name}</span><div class="space-x-2"><button class="edit-relation-btn" data-id="${rel.id}"><span class="icon icon-pencil text-gray-400 hover:text-white"></span></button><button class="delete-relation-btn" data-id="${rel.id}"><span class="icon icon-trash text-gray-400 hover:text-red-500"></span></button></div></div>`).join('');
+            listEl.querySelectorAll('.edit-relation-btn').forEach(btn => btn.onclick = () => handleEditRelation(btn.dataset.id));
+            listEl.querySelectorAll('.delete-relation-btn').forEach(btn => btn.onclick = () => handleDeleteRelation(btn.dataset.id));
+        }
+        
+        function handleEditRelation(id = null) {
+            const isEditing = id !== null;
+            const rel = isEditing ? state.relationDefinitions.find(r => r.id == id) : null;
+            if (isEditing && !rel) return;
+            const content = `<div class="space-y-4"><div><label class="block mb-1 font-medium text-gray-300">Relation Name</label><input type="text" id="relation-name" class="custom-input" placeholder="e.g., IS_ANAGRAM_OF" value="${rel?.name || ''}"></div><div><label class="block mb-1 font-medium text-gray-300">Function Body</label><p class="text-xs text-gray-400 mb-2">Use <code class="bg-gray-900 px-1 rounded">'tokenA'</code> and <code class="bg-gray-900 px-1 rounded">'tokenB'</code> in your logic.</p><textarea id="relation-def" class="custom-textarea h-32" spellcheck="false">${rel?.definition || 'return tokenA.length === tokenB.length;'}</textarea></div></div>`;
+            showModal(isEditing ? 'Edit Relation' : 'Create New Relation', content, () => {
+                const name = document.getElementById('relation-name').value.trim().toUpperCase().replace(/\s+/g, '_');
+                const definition = document.getElementById('relation-def').value.trim();
+                if (!name || !definition) { return showToast("Error", "Name and definition cannot be empty.", "error"), false; }
+                try { new Function('tokenA', 'tokenB', definition); } catch (e) { return showToast("Invalid Function", "The definition has a syntax error.", "error"), false; }
+                if (isEditing) { rel.name = name; rel.definition = definition; showToast("Success", "Relation updated."); }
+                else { state.relationDefinitions.push({ id: Date.now(), name, definition }); showToast("Success", "Relation created."); }
+                renderRelations();
+                renderComparator();
+            }, isEditing ? 'Save Changes' : 'Create Relation');
+        }
+        
+        function handleDeleteRelation(id) {
+            const relName = state.relationDefinitions.find(r => r.id == id)?.name;
+            showModal('Confirm Deletion', `<p>Are you sure you want to delete the <strong class="font-mono text-blue-400">${relName}</strong> relation?</p>`, () => {
+                state.relationDefinitions = state.relationDefinitions.filter(r => r.id != id);
+                showToast("Success", `Relation "${relName}" deleted.`);
+                renderRelations();
+                renderComparator();
+            }, 'Delete');
+        }
+
+        // Tokens module
+        function initTokens() {
+            const widget = document.getElementById('widget-tokens');
+            if(!widget) return;
+            widget.querySelector('.widget-content').innerHTML = `<div id="tokens-list-container" class="font-mono text-gray-300 text-sm"></div>`;
+            renderTokens();
+        }
+        
+        function renderTokens() {
+            const container = document.getElementById('tokens-list-container');
+            if (!container) return;
+            if (state.generatedTokens.length === 0) { container.innerHTML = '<span class="text-gray-500">No tokens generated. Use the Lexicon Manager.</span>'; return; }
+            container.innerHTML = `<div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-8 gap-2">${state.generatedTokens.map(t => `<div class="bg-gray-800 p-2 rounded text-center truncate" title="${t}">${t}</div>`).join('')}</div>`;
+        }
+
+        // Comparator module
+        function initComparator() {
+            const widget = document.getElementById('widget-comparator');
+            if (!widget) return;
+            widget.querySelector('.widget-content').id = 'comparator-content';
+            renderComparator();
+        }
+        
+        function renderComparator() {
+            const container = document.getElementById('comparator-content');
+            if (!container) return;
+            container.innerHTML = `<div class="space-y-3"><div><label class="block mb-1">Token A</label><select id="comparator-token-a" class="custom-select"></select></div><div><label class="block mb-1">Relation</label><select id="comparator-relation" class="custom-select"></select></div><div><label class="block mb-1">Token B</label><select id="comparator-token-b" class="custom-select"></select></div><button id="compare-btn" class="custom-btn w-full"><span class="icon icon-check-double"></span> Compare</button><div class="text-center p-4 mt-2 rounded-lg bg-gray-900"><span class="text-gray-400 mr-2">Result:</span><span id="comparison-result" class="font-bold text-2xl text-white">-</span></div></div>`;
+            updateDropdowns();
+            document.getElementById('compare-btn').onclick = runComparison;
+        }
+        
+        function updateDropdowns() {
+            const tokenOptions = state.generatedTokens.map(t => `<option value="${t}">${t}</option>`).join('');
+            const relationOptions = state.relationDefinitions.map(r => `<option value="${r.id}">${r.name}</option>`).join('');
+            document.getElementById('comparator-token-a').innerHTML = tokenOptions;
+            document.getElementById('comparator-token-b').innerHTML = tokenOptions;
+            document.getElementById('comparator-relation').innerHTML = relationOptions;
+        }
+        
+        function runComparison() {
+            const tokenA = document.getElementById('comparator-token-a').value;
+            const tokenB = document.getElementById('comparator-token-b').value;
+            const relationId = document.getElementById('comparator-relation').value;
+            const resultEl = document.getElementById('comparison-result');
+            const relation = state.relationDefinitions.find(r => r.id == relationId);
+            if (!relation) { return showToast("Error", "Selected relation not found.", "error"); }
+            try {
+                const func = new Function('tokenA', 'tokenB', relation.definition);
+                const result = func(tokenA, tokenB);
+                resultEl.textContent = result;
+                resultEl.className = `font-bold text-2xl ${result ? 'text-green-400' : 'text-red-400'}`;
+            } catch(e) {
+                showToast("Execution Error", `Error in relation '${relation.name}'.`, "error");
+                resultEl.textContent = 'Error';
+                resultEl.className = 'font-bold text-2xl text-yellow-400';
+            }
+        }
+
+        // System module
+        function initSystem() {
+            const widget = document.getElementById('widget-system');
+            if (!widget) return;
+            widget.querySelector('.widget-content').innerHTML = `<div class="grid grid-cols-2 gap-2"><button id="sys-save-state" class="custom-btn"><span class="icon icon-save"></span> Manual Save</button><button id="sys-hard-reset" class="custom-btn custom-btn-danger"><span class="icon icon-skull-crossbones"></span> Hard Reset</button><button id="sys-export-json" class="custom-btn col-span-2"><span class="icon icon-download"></span> Export to JSON File</button><label for="sys-import-json" class="custom-btn col-span-2"><span class="icon icon-upload"></span> Import from JSON File</label><input type="file" id="sys-import-json" class="hidden" accept=".json,application/json"></div>`;
+            document.getElementById('sys-save-state').onclick = () => { saveState(); showToast('Success', 'System state saved manually.'); };
+            document.getElementById('sys-hard-reset').onclick = handleHardReset;
+            document.getElementById('sys-export-json').onclick = handleExport;
+            document.getElementById('sys-import-json').onchange = handleImport;
+        }
+        
+        function handleHardReset() {
+            showModal('Confirm Hard Reset', '<p>Are you sure? This will delete all data from this browser session and restore the initial defaults. This action cannot be undone.</p>', () => { localStorage.removeItem('token_system_state'); location.reload(); }, 'Yes, Delete Everything');
+        }
+        
+        function handleExport() {
+            saveState();
+            const dataStr = JSON.stringify(state, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(dataBlob);
+            const anchor = document.createElement('a');
+            anchor.href = url;
+            anchor.download = `token-system-backup-${Date.now()}.json`;
+            anchor.click();
+            URL.revokeObjectURL(url);
+            showToast("Success", "Database exported successfully.");
+        }
+        
+        function handleImport(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const importedState = JSON.parse(e.target.result);
+                    if (importedState.lexicon && importedState.generatedTokens && importedState.relationDefinitions) {
+                         showModal('Confirm Import', '<p>This will overwrite all current data with the contents of the selected file. This action cannot be undone.</p>', () => { initGameState(importedState); saveState(); location.reload(); }, 'Overwrite and Import');
+                    } else { throw new Error("Invalid file structure."); }
+                } catch (err) { showToast("Import Failed", "The selected file is not a valid database backup.", "error"); }
+                finally { event.target.value = ''; }
+            };
+            reader.readAsText(file);
+        }
+
+        // Main initialization
+        document.addEventListener('DOMContentLoaded', () => {
+            initGameState();
+            renderDashboard();
+
+            // Initialize all modules
+            initLexicon();
+            initRelations();
+            initTokens();
+            initComparator();
+            initSystem();
+
+            showToast("System Ready", "Define your lexicon and generate tokens to begin.");
+
+            // Autosave every 60 seconds
+            setInterval(saveState, 60000);
+            window.addEventListener('beforeunload', saveState);
+        });
+    </script>
+</body>
+</html>

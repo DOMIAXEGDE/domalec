@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Plan: Project BertoTools LMS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Chosen Palette: "Cool Slate" - A professional and calm palette using slate grays, a deep blue for primary actions, and a muted green for success/completion states, creating a focused and supportive feel. -->
+    <!-- Application Structure Plan: A tab-based dashboard. The main navigation consists of five tabs, one for each phase of the upscaling plan, starting with the new Phase 0. This structure allows the user to logically progress through the project timeline from foundational work to advanced features. Each tab's content is organized into cards for technology, architecture, and features, providing a clear, hierarchical view of the information. This is more intuitive than a linear document, as it lets users compare phases or focus on specific aspects (like technology) across the entire project. Interactive elements like hover-to-reveal details on cards keep the interface clean while offering depth on demand. -->
+    <!-- Visualization & Content Choices: 
+        - **Project Phases (Tabs):** Report Info: The five-phase upscaling plan. -> Goal: Organize & Compare. -> Viz/Presentation: Interactive tabs. -> Interaction: Click to switch between detailed views of each phase. -> Justification: The most intuitive way to present a sequential, multi-stage plan, allowing for easy comparison and focused review. -> Library/Method: Vanilla JS and Tailwind CSS.
+        - **Technology Stack (Diagram):** Report Info: Lists of technologies (Node.js, PostgreSQL, Docker, etc.). -> Goal: Organize & Inform. -> Viz/Presentation: Styled HTML/CSS cards arranged in a logical stack diagram. -> Interaction: Hover effects to highlight each component. -> Justification: A visual diagram is more engaging and easier to parse than a simple list, showing how technologies layer together. -> Library/Method: Tailwind CSS.
+        - **Architectural Changes (Flow Diagram):** Report Info: From client-side to client-server. -> Goal: Change & Organize. -> Viz/Presentation: Two-column HTML/CSS flow diagram showing "Before" and "After" states with connecting arrows. -> Interaction: None needed, clarity is key. -> Justification: Directly visualizes the fundamental shift in architecture, which is a core concept of Phase 1. -> Library/Method: Tailwind CSS, Unicode characters for arrows.
+        - **Feature Lists (Interactive Cards):** Report Info: Lists of features for each phase. -> Goal: Inform & Organize. -> Viz/Presentation: A grid of cards, each representing a feature. -> Interaction: Subtle hover animations to increase engagement. -> Justification: Cards are a modern, scannable way to present distinct packets of information. -> Library/Method: Tailwind CSS.
+        - **Timeline/Effort (Bar Chart):** Report Info: Implicit complexity and duration of each phase. -> Goal: Compare. -> Viz/Presentation: A horizontal bar chart showing estimated relative effort for each phase. -> Interaction: Tooltips on hover to show details. -> Justification: Provides an at-a-glance summary of the project's scope and where the most work is concentrated, with Phase 0's unique nature clarified. -> Library/Method: Chart.js.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc; /* Warm Neutral - Almost White */
+        }
+        .tab {
+            transition: all 0.3s ease;
+            border-bottom: 2px solid transparent;
+            padding-bottom: 0.5rem;
+            margin-bottom: -2px;
+        }
+        .tab.active {
+            color: #2563eb; /* Accent Color */
+            border-bottom-color: #2563eb;
+        }
+        .card {
+            background-color: #ffffff;
+            border: 1px solid #e2e8f0; /* Neutral Border */
+            transition: all 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .tech-stack-item {
+            border: 1px solid #e2e8f0;
+            background-color: #f1f5f9;
+        }
+        .flow-arrow {
+            font-size: 2rem;
+            color: #94a3b8;
+        }
+        .chart-container {
+            position: relative;
+            margin: auto;
+            height: 350px;
+            max-height: 350px;
+            width: 100%;
+            max-width: 800px;
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container mx-auto p-4 md:p-8 max-w-7xl">
+        <!-- Header -->
+        <header class="text-center mb-10">
+            <h1 class="text-4xl md:text-5xl font-bold text-slate-800">BertoTools LMS</h1>
+            <p class="mt-2 text-lg text-slate-600">Interactive Enterprise Upscaling Plan</p>
+        </header>
+
+        <!-- Main Content -->
+        <main class="bg-white rounded-2xl shadow-lg p-6 md:p-8">
+            <!-- Introduction Section -->
+            <section class="mb-8">
+                 <p class="text-slate-700 leading-relaxed">
+                    This interactive application translates the "Project BertoTools" upscaling plan into a dynamic and explorable dashboard. The original prototype demonstrated the core concept of gamified learning using procedurally generated 'Tokens.' This plan outlines the strategic, phased approach to evolve that prototype into a secure, scalable, and collaborative enterprise-level Learning Management System (LMS) suitable for educational institutions and corporate training. Use the tabs below to navigate through each phase of the project.
+                </p>
+            </section>
+            
+            <!-- Tabs Navigation -->
+            <div class="border-b border-slate-200 mb-8">
+                <nav class="-mb-px flex space-x-6 overflow-x-auto" id="tabs">
+                    <button class="tab active whitespace-nowrap" data-tab="phase0">Phase 0: The Path</button>
+                    <button class="tab whitespace-nowrap" data-tab="phase1">Phase 1: Foundation</button>
+                    <button class="tab whitespace-nowrap" data-tab="phase2">Phase 2: Content Tools</button>
+                    <button class="tab whitespace-nowrap" data-tab="phase3">Phase 3: Collaboration</button>
+                    <button class="tab whitespace-nowrap" data-tab="phase4">Phase 4: Scaling & AI</button>
+                </nav>
+            </div>
+
+            <!-- Tab Content -->
+            <div id="tab-content">
+                <!-- All tab content will be dynamically generated by JS -->
+            </div>
+        </main>
+        
+        <!-- Overall Project Timeline Section -->
+        <section class="mt-12">
+            <h2 class="text-2xl font-bold text-slate-800 text-center mb-6">Relative Phase Scope & Effort</h2>
+            <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8">
+                <p class="text-center text-slate-600 mb-6">This chart provides a visual estimate of the relative scope for each project phase. Phase 0 represents a long-term personal learning commitment, while Phases 1-4 represent development effort.</p>
+                <div class="chart-container">
+                    <canvas id="timelineChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const tabs = document.querySelectorAll('.tab');
+            const tabContentContainer = document.getElementById('tab-content');
+
+            const content = {
+                phase0: `
+                    <div class="animate-fade-in">
+                        <h3 class="text-2xl font-bold text-slate-800 mb-1">Phase 0: The Path</h3>
+                        <p class="text-slate-600 mb-6">This foundational phase is a personal, 30-year commitment to acquiring the deep, cross-disciplinary knowledge required to architect and lead the subsequent development phases.</p>
+                        
+                        <div class="grid md:grid-cols-3 gap-6">
+                           <div class="card rounded-xl p-6 md:col-span-2">
+                                <h4 class="font-bold text-lg text-slate-700 mb-3">Core Learning Domains</h4>
+                                <p class="text-slate-600 mb-4">Mastery will be pursued through traditional means: literature, tutorship, and existing learning services.</p>
+                                <ul class="space-y-2 list-disc list-inside text-slate-700">
+                                    <li><b>Hardware Engineering:</b> From silicon architecture to system design.</li>
+                                    <li><b>Programming:</b> Foundational languages to advanced software paradigms.</li>
+                                    <li><b>AI & ML Architecture:</b> Designing and implementing intelligent systems.</li>
+                                    <li><b>Engineering Science:</b> The application of scientific principles to engineering challenges.</li>
+                                </ul>
+                           </div>
+                           <div class="card rounded-xl p-6 bg-blue-50 border-blue-200">
+                                <h4 class="font-bold text-lg text-slate-700 mb-3">Timeline & Prerequisite</h4>
+                                <div class="space-y-4">
+                                    <div>
+                                        <div class="text-sm font-medium text-slate-500">Start Date</div>
+                                        <div class="text-lg font-semibold text-slate-800">01 July 2025</div>
+                                    </div>
+                                     <div>
+                                        <div class="text-sm font-medium text-slate-500">End Date</div>
+                                        <div class="text-lg font-semibold text-slate-800">01 July 2055</div>
+                                    </div>
+                                    <div>
+                                        <div class="text-sm font-medium text-slate-500">Duration</div>
+                                        <div class="text-lg font-semibold text-slate-800">30 Years</div>
+                                    </div>
+                                </div>
+                                <p class="mt-4 text-sm text-blue-800">Successful completion of this phase is a mandatory prerequisite for commencing Phase 1.</p>
+                           </div>
+                        </div>
+                    </div>
+                `,
+                phase1: `
+                    <div class="animate-fade-in">
+                        <h3 class="text-2xl font-bold text-slate-800 mb-1">Foundational Backend & Authentication</h3>
+                        <p class="text-slate-600 mb-6">The immediate priority is to move from a client-only model to a robust, secure client-server architecture.</p>
+                        
+                        <div class="grid md:grid-cols-2 gap-8">
+                            <!-- Left Column: Tech & Architecture -->
+                            <div class="space-y-8">
+                                <div class="card rounded-xl p-6">
+                                    <h4 class="font-bold text-lg text-slate-700 mb-4">Proposed Technology Stack</h4>
+                                    <div class="space-y-3">
+                                        <div class="tech-stack-item p-3 rounded-lg"><b class="text-slate-800">Backend:</b> Node.js with Express.js</div>
+                                        <div class="tech-stack-item p-3 rounded-lg"><b class="text-slate-800">Database:</b> PostgreSQL</div>
+                                        <div class="tech-stack-item p-3 rounded-lg"><b class="text-slate-800">Authentication:</b> OAuth 2.0 / OIDC (e.g., Auth0)</div>
+                                    </div>
+                                </div>
+                                 <div class="card rounded-xl p-6">
+                                    <h4 class="font-bold text-lg text-slate-700 mb-4">Architectural Shift</h4>
+                                     <p class="text-sm text-slate-500 mb-4">The core change is moving all state management and logic from the user's browser to a centralized, secure server.</p>
+                                    <div class="flex items-center justify-between">
+                                        <div class="text-center">
+                                            <div class="p-4 bg-red-50 text-red-700 rounded-lg"><b>Prototype</b><br>(Client-Side)</div>
+                                        </div>
+                                        <div class="flow-arrow">&#x279C;</div>
+                                        <div class="text-center">
+                                            <div class="p-4 bg-green-50 text-green-700 rounded-lg"><b>Enterprise</b><br>(Server-Side)</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Right Column: Features -->
+                            <div class="card rounded-xl p-6">
+                                <h4 class="font-bold text-lg text-slate-700 mb-4">Key Features & Changes</h4>
+                                <ul class="space-y-3 list-disc list-inside text-slate-600">
+                                    <li><b>Database Schema:</b> Design tables for Users, Skills, Quests, and Tokens to create relationships and ensure data integrity.</li>
+                                    <li><b>Secure RESTful API:</b> Develop API endpoints for all data operations (login, fetching profiles, generating tokens).</li>
+                                    <li><b>Server-Side Logic:</b> Move token generation and XP calculation from the client to the backend API to prevent cheating and ensure consistency.</li>
+                                    <li><b>Frontend Refactoring:</b> Remove all \`localStorage\` logic and modify the frontend to communicate with the new API for all state changes.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                `,
+                phase2: `
+                    <div class="animate-fade-in">
+                        <h3 class="text-2xl font-bold text-slate-800 mb-1">Instructor & Content Management Tools</h3>
+                        <p class="text-slate-600 mb-6">With the core backend in place, this phase empowers educators to create and manage the learning experience.</p>
+                        
+                        <div class="grid md:grid-cols-3 gap-6">
+                           <div class="card rounded-xl p-6">
+                                <h4 class="font-bold text-lg text-slate-700 mb-3">Quest Builder UI</h4>
+                                <p class="text-slate-600">A secure, intuitive interface for instructors to create skills, design multi-objective quests, and chain them into learning pathways.</p>
+                           </div>
+                           <div class="card rounded-xl p-6">
+                                <h4 class="font-bold text-lg text-slate-700 mb-3">Classroom Management</h4>
+                                <p class="text-slate-600">Instructors can create virtual "Classrooms," invite students via email or code, and manage their rosters.</p>
+                           </div>
+                           <div class="card rounded-xl p-6">
+                                <h4 class="font-bold text-lg text-slate-700 mb-3">Progress Dashboard</h4>
+                                <p class="text-slate-600">A dedicated dashboard for instructors to track student progress, view quest completion rates, and identify common challenges.</p>
+                           </div>
+                        </div>
+                    </div>
+                `,
+                phase3: `
+                    <div class="animate-fade-in">
+                        <h3 class="text-2xl font-bold text-slate-800 mb-1">Collaboration & Advanced Features</h3>
+                        <p class="text-slate-600 mb-6">Transforming the LMS from an individual learning tool into a dynamic, collaborative environment.</p>
+                         <div class="grid md:grid-cols-2 gap-8">
+                            <!-- Left Column: Tech -->
+                            <div class="card rounded-xl p-6">
+                                <h4 class="font-bold text-lg text-slate-700 mb-4">Upgraded Technology Stack</h4>
+                                <div class="space-y-3">
+                                    <div class="tech-stack-item p-3 rounded-lg"><b class="text-slate-800">Real-time Engine:</b> WebSockets (e.g., Socket.io)</div>
+                                    <div class="tech-stack-item p-3 rounded-lg"><b class="text-slate-800">Document Engine:</b> Advanced editor (e.g., TipTap) for operational transforms.</div>
+                                </div>
+                            </div>
+                            <!-- Right Column: Features -->
+                            <div class="card rounded-xl p-6">
+                                <h4 class="font-bold text-lg text-slate-700 mb-4">Collaborative Features</h4>
+                                <ul class="space-y-3 list-disc list-inside text-slate-600">
+                                    <li><b>Collaborative Document Editor:</b> Multiple users edit a single document in real-time for group quests.</li>
+                                    <li><b>Shared Token Banks:</b> Classroom-level banks allow students to build upon each other's work.</li>
+                                    <li><b>Peer Review System:</b> Students can review and provide feedback on each other's quest submissions.</li>
+                                     <li><b>LMS Integration APIs:</b> Connect with Moodle, Canvas, etc., for grade reporting and user syncing.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                `,
+                phase4: `
+                    <div class="animate-fade-in">
+                        <h3 class="text-2xl font-bold text-slate-800 mb-1">Deployment, Scaling & Analytics</h3>
+                        <p class="text-slate-600 mb-6">Focusing on production-readiness, enterprise-level scalability, and data-driven platform improvement.</p>
+                        
+                        <div class="grid md:grid-cols-2 gap-8">
+                            <!-- DevOps -->
+                            <div class="card rounded-xl p-6">
+                                <h4 class="font-bold text-lg text-slate-700 mb-4">Deployment & DevOps</h4>
+                                <ul class="space-y-3 list-disc list-inside text-slate-600">
+                                    <li><b>Containerisation:</b> Package services using Docker for portability.</li>
+                                    <li><b>Orchestration:</b> Manage scaling and deployment with Kubernetes.</li>
+                                    <li><b>Cloud Deployment:</b> Host on a major cloud platform like AWS, Google Cloud, or Azure.</li>
+                                    <li><b>CI/CD Pipeline:</b> Automate testing and deployment using GitHub Actions or Jenkins.</li>
+                                </ul>
+                            </div>
+                            <!-- Analytics & ML -->
+                             <div class="card rounded-xl p-6">
+                                <h4 class="font-bold text-lg text-slate-700 mb-4">Analytics & Machine Learning</h4>
+                                <ul class="space-y-3 list-disc list-inside text-slate-600">
+                                    <li><b>Learning Analytics:</b> Identify common roadblocks and ineffective learning paths from anonymised data.</li>
+                                    <li><b>Procedural Quest Generation:</b> Use ML to create new, personalised quests based on user performance.</li>
+                                    <li><b>Dynamic Difficulty Scaling:</b> Automatically adjust quest and token complexity based on a user's skill level.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                `,
+            };
+
+            function updateContent(tabId) {
+                tabContentContainer.innerHTML = content[tabId];
+            }
+
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    updateContent(tab.dataset.tab);
+                });
+            });
+
+            // Initial content
+            updateContent('phase0');
+            
+            // Timeline Chart
+            const ctx = document.getElementById('timelineChart').getContext('2d');
+            const timelineChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Phase 0: The Path', 'Phase 1: Foundation', 'Phase 2: Content Tools', 'Phase 3: Collaboration', 'Phase 4: Scaling & AI'],
+                    datasets: [{
+                        label: 'Relative Scope/Effort',
+                        data: [100, 30, 15, 25, 30], // Phase 0 is personal scope, 1-4 are development effort
+                        backgroundColor: [
+                            'rgba(100, 116, 139, 0.7)',
+                            'rgba(59, 130, 246, 0.7)',
+                            'rgba(16, 185, 129, 0.7)',
+                            'rgba(249, 115, 22, 0.7)',
+                            'rgba(139, 92, 246, 0.7)'
+                        ],
+                        borderColor: [
+                            'rgba(100, 116, 139, 1)',
+                            'rgba(59, 130, 246, 1)',
+                            'rgba(16, 185, 129, 1)',
+                            'rgba(249, 115, 22, 1)',
+                            'rgba(139, 92, 246, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Relative Scope & Effort Value'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.label === 'Phase 0: The Path') {
+                                        label = 'Personal Learning Scope (30 Years)';
+                                    } else {
+                                        label = `Development Effort: ${context.raw}%`;
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
